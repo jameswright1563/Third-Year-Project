@@ -1,9 +1,5 @@
 import numpy as np
 
-
-
-
-
 class Matrices:
     def matrixInverse(self):
         mat = self.matrixInput()
