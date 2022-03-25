@@ -1,48 +1,60 @@
 import numpy as np
+import PySimpleGUI as sg
 
-class Matrices:
-    def matrixInverse(self):
-        mat = self.matrixInput()
-        try:
-            np.invert(mat)
-        except (np.LinAlgError):
-            print("Matrix must be square")
-    def matrixmultiplication(self):
-        mat1 = self.matrixInput()
-        mat2 = self.matrixInput()
-        if np.shape(mat1)[1] == np.shape(mat2)[0]:
-            result = np.dot(mat1, mat2)
-            print("Matrix 1: \n%", result)
-        else:
-            print("Columns of first matrix must be equal to rows of 2nd matrix")
-
-    def matrixAddition(self):
-        mat1 = self.matrixInput()
-        mat2 = self.matrixInput()
-        result = np.add(mat1, mat2)
-        print(result)
-
-    def matrixInput(self):
-        R = int(input("Enter the number of rows:"))
-        C = int(input("Enter the number of columns:"))
-
-        print("Enter the entries in a single line (separated by space): ")
-
-        # User input of entries in a
-        # single line separated by space
-        entries = list(map(int, input().split()))
-
-        # For printing the matrix
-        matrix = np.array(entries).reshape(R, C)
-        print(matrix)
-        return matrix
+import tkinter as tk
+# import src.tkintergui
+import src.matrices
 
 
-"""Temporary main Method"""
+def gui():
+    layout = [
+        [sg.Text("Math Solver, please click your category")],
+        [sg.Button("Matrices", key="-MATRIX-", enable_events=True)],
+        [sg.Button("Vectors", key="vector")]
+    ]
 
-if __name__ == '__main__':
-    choice = int(input("Type 1 for matrix muliplication \n2: Matrix Addition"))
-    if choice == 1:
-        Matrices.matrixmultiplication()
-    elif choice == 2:
-        Matrices.matrixAddition()
+    matrixLayout = [
+        [sg.Text("Please Select What operation you would like to carry out")],
+        [sg.Button("Matrix Inverse", key="-INVERSE-")]
+    ]
+    dimensionLayout = [
+        [sg.InputCombo]
+    ]
+    inverseLayout = [
+        [sg.InputText("", key="-1-", size=(4, 4)), sg.InputText("", key="-2-", size=(4, 4)),
+         sg.InputText("", key="-3-", size=(4, 4))],
+        [sg.InputText("", key="-4-", size=(4, 4)), sg.InputText("", key="-5-", size=(4, 4)),
+         sg.InputText("", key="-6-", size=(4, 4))],
+        [sg.InputText("", key="-7-", size=(4, 4)), sg.InputText("", key="-8-", size=(4, 4)),
+         sg.InputText("", key="-9-", size=(4, 4))],
+        [sg.Button("SOLVE", key="-insub-")]
+    ]
+
+    window = sg.Window("Math Solver", layout, size=(1000, 1000))
+
+    while True:
+        event, values = window.read()
+
+        if event == "-MATRIX-":
+            # src.tkintergui.root()
+            window = sg.Window("Matrix Operations", matrixLayout)
+        if event == "-INVERSE-":
+            # window=sg.Window("Select your dimension")
+            window = sg.Window("Matrix Inverser", inverseLayout, size=(1000, 1000))
+        if event == "-insub-":
+            arr = []
+            for x in values.items():
+                num = int(x[1])
+                arr.append(num)
+            print(len(arr))
+            result = src.matrices.Matrices().matrixInverse(arr)
+            print(result)
+            print(arr)
+
+        if event == "OK" or event == sg.WINDOW_CLOSED:
+            break
+
+    window.close()
+
+
+gui()
