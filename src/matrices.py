@@ -1,20 +1,19 @@
 import numpy as np
 import math
 
+
 class Matrices:
 
+    def __init__(self):
+        self.scalar = None
 
     def matrixInverse(self, matrix1):
-        mat=np.asmatrix(matrix1)
+        mat = np.asmatrix(matrix1)
         shape = int(math.sqrt(len(matrix1)))
-        mat.reshape(matrix1, (shape, shape))
-
-        print(mat)
-        try:
-            mat=np.invert(mat)
-        except (np.LinAlgError):
-            print("Matrix must be square")
+     #   mat.reshape(mat,(shape, shape))
+        mat = np.linalg.inv(mat)
         return mat
+
     def matrixmultiplication(self):
         mat1 = self.matrixInput()
         mat2 = self.matrixInput()
@@ -24,11 +23,10 @@ class Matrices:
         else:
             print("Columns of first matrix must be equal to rows of 2nd matrix")
 
-    def matrixAddition(self):
-        mat1 = self.matrixInput()
-        mat2 = self.matrixInput()
+    def matrixAddition(self, mat1, mat2):
         result = np.add(mat1, mat2)
-        print(result)
+        return result
+
 
     def matrixInput(self):
         R = int(input("Enter the number of rows:"))
@@ -69,11 +67,6 @@ class Matrices:
         det = self.determinant(arr)
         # print_inv(ans,det)
         return det, ans
-
-
-
-
-
 
 
 """Temporary main Method"""
