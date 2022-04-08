@@ -22,33 +22,34 @@ def createInverseLayout(cols, rows):
     inverseLayout = []
     inverseLayout.append(createMatrix(cols, rows))
     inverseLayout.append([sg.Button("Solve", key="-insub-")])
-    inverseLayout.append([sg.Output()])
+    inverseLayout.append([sg.Output(size=(50, 20))])
     return inverseLayout
 
 
 def createDetLayout(dim):
     det = [[sg.Text("Matrix")], createMatrix(dim, dim), [sg.Button("Find Determinant", key="-detmat")],
-           [sg.Output(size=(50,50))]]
+           [sg.Output(size=(50, 50))]]
     return det
 
 
 def createMultLayout(col1, row1, col2, row2):
-    mult = [[sg.Frame("Matrix 1", createMatrix(col1, row1), key="mat1")],
-            [sg.Frame("Matrix 2: ", createMatrix(col2, row2))],
+    mult = [[sg.Frame("Matrix 1", createMatrix(col1, row1), key="mat1"),
+            sg.Frame("Matrix 2: ", createMatrix(col2, row2))],
             [sg.Button("Solve", key="-multmat-")], [sg.Output()]]
     return mult
 
 
 def createAdditionLayout(cols, rows):
-    addLayout = [[sg.Frame("Matrix 1", createMatrix(cols, rows), key="mat1")],
-                 [sg.Frame("Matrix 2: ", createMatrix(cols, rows))],
+    column1 = createMatrix(cols, rows)
+    # column1.insert()
+    addLayout = [[sg.Frame("Matrix 1", createMatrix(cols, rows), key="mat1"),
+                 sg.Frame("Matrix 2: ", createMatrix(cols, rows))],
                  [sg.Button("Solve", key="-addmat-")], [sg.Output()]]
     return addLayout
 
-
 def createSubtractionLayout(cols, rows):
-    subLayout = [[sg.Frame("Matrix 1", createMatrix(cols, rows), key="mat1")],
-                 [sg.Frame("Matrix 2: ", createMatrix(cols, rows))],
+    subLayout = [[sg.Frame("Matrix 1", createMatrix(cols, rows), key="mat1"),
+                 sg.Frame("Matrix 2: ", createMatrix(cols, rows))],
                  [sg.Button("Solve", key="-submat-")], [sg.Output()]]
     return subLayout
 
@@ -62,35 +63,51 @@ def gui():
 
     matrixLayout = [
         [sg.Text("Please Select What operation you would like to carry out")],
-        [sg.Button("Matrix Addition", key="matrixadd")],
-        [sg.Button("Matrix Subtraction", key="-matrixSUB")], [sg.Button("Matrix Multiplication", key="-matrixMUL")],
-        [sg.Frame("Singular dimension calculations: ", [[sg.Combo([2, 3, 4, 5], default_value=2,key="singledim")],
+        [sg.Button("Matrix Multiplication", key="-matrixMUL")],
+        [sg.Frame("Single 2-Dimension Calculations", [[sg.Button("Transpose/Cofactor Matrix", key="mattran"),
+                                                       sg.Text("Columns"), sg.Combo([2, 3, 4, 5], key="trancol"),
+                                                       sg.Text("Rows"),
+                                                       sg.Combo([2, 3, 4, 5], key="tranrow")],
+                                                      [sg.Button("Matrix Addition", key="matrixadd"),
+                                                       sg.Text("Columns"),
+                                                       sg.Combo([2, 3, 4, 5], key="adddimcol"),sg.Text("Rows"),
+                                                       sg.Combo([2, 3, 4, 5], key="adddimrow")],
+
+        [sg.Button("Matrix Subtraction", key="-matrixSUB"),sg.Text("Columns"), sg.Combo([2, 3, 4, 5], key="subdimcol"),sg.Text("Rows"),
+                                                       sg.Combo([2, 3, 4, 5], key="subdimrow")]
+                  ])],
+        [sg.Button("Scalar Multiplication", key="matrixscalar"),
+         sg.Text("Scalar Value"), sg.InputText(default_text=0.5, key="scalarmult")
+         sg.Text("Columns"),
+         sg.Combo([2, 3, 4, 5], key="adddimcol"), sg.Text("Rows"),
+         sg.Combo([2, 3, 4, 5], key="adddimrow")]
+
+        [sg.Frame("Single 1-dimension calculations: ", [[sg.Combo([2, 3, 4, 5], default_value=2, key="singledim")],
                                                         [sg.Button("Determinant", key="-matdet")
                                                          ], [sg.Button("Matrix Inverse", key="-INVERSE-")]])]
     ]
     additiondimLayout = [
-        [sg.Text("Please select  the dimensions of the matrix, First Box is the column, second is the row")],
+        [sg.Text("Please select  the dimension of the matrix, First Box is the column, second is the row")],
         [[sg.Combo([2, 3, 4, 5], key="adddimcol")], [sg.Combo([2, 3, 4, 5], key="adddimrow")]],
         [sg.Button("OK", key="-okadddim")]
     ]
     subdimLayout = [
         [sg.Text("Please select  the dimensions of the matrix, First Box is the column, second is the row")],
-        [[sg.Combo([2, 3, 4, 5], key="subdimcol")], [sg.Combo([2, 3, 4, 5], key="subdimrow")]],
+        [[sg.Combo([2, 3, 4, 5], default_value=2, key="subdimcol")], [sg.Combo([2, 3, 4, 5], default_value=2,
+                                                                               key="subdimrow")]],
         [sg.Button("OK", key="-oksubdim")]
     ]
     multdimLayout = [
         [sg.Frame("Matrix 1",
                   [[sg.Text("Please select  the dimensions of the matrix, First Box is the column, second is the row")],
-                   [sg.Combo([2, 3, 4, 5], key="matdimcol1")], [sg.Combo([2, 3, 4, 5], key="matdimrow1")]])],
+                   [sg.Combo([2, 3, 4, 5], default_value=2, key="matdimcol1")], [sg.Combo([2, 3, 4, 5], default_value=2,
+                                                                                          key="matdimrow1")]])],
         [sg.Frame("Matrix 2",
                   [[sg.Text("Please select  the dimensions of the matrix, First Box is the column, second is the row")],
-                   [sg.Combo([2, 3, 4, 5], key="matdimcol2")],
+                   [sg.Combo([2, 3, 4, 5], default_value=2, key="matdimcol2")],
                    [sg.Combo([2, 3, 4, 5], default_value=2, key="matdimrow2")]])],
         [sg.Button("OK", key="-okmultdim")]
     ]
-    resultLayout = [[sg.Text("Result"), sg.Output()]]
-    inverseLayout = None
-    additionLayout = None
     window = sg.Window("Math Solver", layout, size=(200, 200))
     dim = 0
     cols = 0
@@ -106,43 +123,27 @@ def gui():
             # src.tkintergui.root()
             window = sg.Window("Matrix Operations", matrixLayout)
         if event == "-INVERSE-":
-            dim=values["singledim"]
+            dim = values["singledim"]
             inverseLayout = createInverseLayout(dim, dim)
-            window = sg.Window("Matrix Inverse", inverseLayout, size=(1000, 1000))
+            window = sg.Window("Matrix Inverse", inverseLayout)
         if event == "-insub-":
-            arr = []
-            i = 0
-            curr = []
-            for x in values.items():
-                num = int(x[1])
-                if i == dim:
-                    arr.append(curr)
-                    curr = []
-                curr.append(num)
-                i += 1
-            arr.append(curr)
+            arr = mat.Matrices().singleSplit(values.items(), dim, dim)
             try:
-                result = mat.Matrices().matrixInverse(arr)
+                result = mat.Matrices().manualInverse(np.array(arr))
                 print("The result is:")
                 print(result)
             except numpy.linalg.LinAlgError:
                 print("Matrix is inversible")
-
         if event == "matrixadd":
-            window = sg.Window("Select your dimension", additiondimLayout)
-        if event == "-okadddim":
             cols = values["adddimcol"]
             rows = values["adddimrow"]
             additionLayout = createAdditionLayout(cols, rows)
             window = sg.Window("Matrix Addition", additionLayout)
-
         if event == "-addmat-":
             matrices = mat.Matrices().matrixSplit(values.items(), cols, rows)
             result = mat.Matrices().matrixAddition(matrices[0], matrices[1])
             print(result)
         if event == "-matrixSUB":
-            window = sg.Window("Select your dimensions", subdimLayout)
-        if event == "-oksubdim":
             cols = values["subdimcol"]
             rows = values["subdimrow"]
             subtractionLayout = createSubtractionLayout(cols, rows)
@@ -169,12 +170,25 @@ def gui():
             print(result)
 
         if event == "-matdet":
-            dim=int(values["singledim"])
+            dim = int(values["singledim"])
             window = sg.Window("Matrix Determinant", createDetLayout(values["singledim"]))
         if event == "-detmat":
             matrix = mat.Matrices().singleSplit(values.items(), dim, dim)
             result = mat.Matrices().matrixDeterminant(matrix)
             print(result)
+        if event=="mattran":
+            cols = values["trancol"]
+            rows=values["tranrow"]
+            window=sg.Window("Transpose Matrix",[[sg.Frame("Matrix Input", createMatrix(values["trancol"], values["tranrow"]))], sg.Button("Solve", key="tranok")])
+        if event == "tranok":
+            matrix = mat.Matrices().singleSplit(values.items(), cols, rows)
+            cofactor = mat.Matrices().matrixCofactors(matrix)
+            print("Cofactor Matrix")
+            print(cofactor)
+            print("Transposed matrix")
+            print(cofactor.transpose())
+        if event == "matrixscalar":
+            cols = values
         if event == "OK" or event == sg.WINDOW_CLOSED:
             break
 

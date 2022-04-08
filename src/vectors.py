@@ -24,3 +24,6 @@ class Vector:
 
     def scalarMult(self, vectorchoice):
         return self.scalar * vectorchoice
+    
+    def getMagnitude(self, vector):
+        return np.linalg.norm(vector)

@@ -2,6 +2,11 @@ import numpy as np
 import math
 
 
+def truncate(n, decimals=0):
+    multiplier = 10 ** decimals
+    return int(n * multiplier) / multiplier
+
+
 class Matrices:
 
     def __init__(self):
@@ -97,49 +102,56 @@ class Matrices:
         print(mat2)
         return mat1, mat2
 
-    def matrixInverse(self, matrix1):
-        mat = np.asmatrix(matrix1)
-        shape = int(math.sqrt(len(matrix1)))
-        #   mat.reshape(mat,(shape, shape))
-        mat = np.linalg.inv(mat)
-        return mat
-
     def matrixDeterminant(self, mat):
         return np.linalg.det(mat)
 
     @staticmethod
     def minor(arr, i, j):
         # ith row, jth column removed
-        x=arr
-        res= x[np.array(list(range(i)) + list(range(i + 1, x.shape[0])))[:, np.newaxis],
-                   np.array(list(range(j)) + list(range(j + 1, x.shape[1])))]
+        x = arr
+        res = x[np.array(list(range(i)) + list(range(i + 1, x.shape[0])))[:, np.newaxis],
+                np.array(list(range(j)) + list(range(j + 1, x.shape[1])))]
         return res
 
     def matrixMinors(self, arr):
-        new_arr=np.zeros((len(arr),len(arr)))
-        for i in range(0,arr.shape[0]):
-            for j in range(0,arr.shape[0]):
-                det=round(np.linalg.det(Matrices().minor(arr, i, j)))
+        new_arr = np.zeros((len(arr), len(arr)))
+        for i in range(0, arr.shape[0]):
+            for j in range(0, arr.shape[0]):
+                det = round(np.linalg.det(Matrices().minor(arr, i, j)))
                 new_arr[i][j] = det
         return new_arr
 
-    def matrixCofactors(self,arr):
-        negative=False
-        new_arr=arr
-        for i in range(0,len(arr)):
-            for j in range(0,len(arr)):
-                if negative:
-                    new_arr[i][j]=-arr[i][j]
-                    negative =False
-                else:
-                    if arr[i][j]>=0:
-                        negative=True
-                    else:
+    def matrixCofactors(self, arr):
+        negative = False
+        new_arr = arr
+        if not len(arr) == 2:
+            for i in range(0, len(arr)):
+                for j in range(0, len(arr)):
+                    if negative:
                         new_arr[i][j] = -arr[i][j]
-                        negative = True
+                        negative = False
+                    else:
+                        if arr[i][j] >= 0:
+                            negative = True
+                        else:
+                            new_arr[i][j] = -arr[i][j]
+                            negative = True
+        else:
+            new_arr[0][1] = -arr[0][1]
+            new_arr[1][0] = -arr[1][0]
         return new_arr
+
+    def roundArr(self, arr):
+        new_arr = arr
+        for i in range(0, len(arr)):
+            for j in range(0, len(arr)):
+                new_arr[i][j] = truncate(arr[i][j], 1)
+        return new_arr
+
     def manualInverse(self, arr):
-        det = self.matrixDeterminant(arr)
+        det = round(self.matrixDeterminant(arr))
+        if det == 0:
+            raise np.linalg.LinAlgError
         print("Determinant: ")
         print(det)
         minors = self.matrixMinors(arr)
@@ -152,12 +164,11 @@ class Matrices:
         print("Transpose the matrix: ")
         print(transposed)
         print("Now we multiply each element by 1 over the determinant")
-        inversed = (1/det)*transposed
+        inversed = (1 / det) * transposed
+        inversed = self.roundArr(inversed)
         print("Inversed Matrix: ")
         print(inversed)
         return inversed
-
-
 
     def check_mult_dimension(self, col1, row2):
         if col1 == row2:
@@ -191,31 +202,6 @@ class Matrices:
         matrix = np.array(entries).reshape(R, C)
         print(matrix)
         return matrix
-
-    def determinant(arr):
-        value = arr[0][0] * (arr[1][1] * arr[2][2] - arr[1][2] * arr[2][1])
-        value1 = (arr[0][1] * (arr[1][0] * arr[2][2] - arr[1][2] * arr[2][0]))
-        value2 = arr[0][2] * (arr[1][0] * arr[2][1] - arr[2][0] * arr[1][1])
-        return value - value1 + value2
-
-    def cofactor(self, arr, determinant=None):
-        a = arr[1][1] * arr[2][2] - arr[2][1] * arr[1][2]
-        b = arr[1][0] * arr[2][2] - arr[2][0] * arr[1][2]
-        c = arr[1][0] * arr[2][1] - arr[2][0] * arr[1][1]
-        # x
-        d = arr[0][0] * arr[2][2] - arr[2][0] * arr[0][2]
-        e = arr[0][1] * arr[2][2] - arr[2][1] * arr[0][2]
-        f = arr[0][0] * arr[2][1] - arr[2][0] * arr[0][1]
-        #
-        g = arr[0][1] * arr[1][2] - arr[1][1] * arr[0][2]
-        h = arr[0][0] * arr[1][2] - arr[1][0] * arr[0][2]
-        i = arr[0][0] * arr[1][1] - arr[1][0] * arr[0][1]
-
-        # print(a,-b,c,"\n",-d,e,-f,"\n",i,-h,g)
-        ans = (a, d, g, -b, -e, -h, c, -f, i)
-        det = self.determinant(arr)
-        # print_inv(ans,det)
-        return det, ans
 
 
 """Temporary main Method"""
