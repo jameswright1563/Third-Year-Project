@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import PySimpleGUI as sg
 
 
 def truncate(n, decimals=0):
@@ -7,17 +8,34 @@ def truncate(n, decimals=0):
     return int(n * multiplier) / multiplier
 
 
+def fillNoneValues(items):
+    newDict = {}
+    for x in items:
+        if items[x] == "":
+            newDict[x] = "0"
+        else:
+            try:
+                newDict[x] = float(items[x])
+            except ValueError:
+                sg.Popup("Please enter a numerical value")
+    return newDict
+
 class Matrices:
 
     def __init__(self):
         self.scalar = None
 
+    def scalarMult(self, mat, scalar):
+        self.scalar = float(scalar)
+        return self.scalar * np.array(mat)
+
     def singleSplit(self, items, cols, rows):
+        items = fillNoneValues(items)
         mat1 = []
         i = 0
         mat1pos = 1
         curr = []
-        for x in items:
+        for x in items.items():
             if i < (cols * rows):
                 num = int(x[1])
                 curr.append(num)
@@ -31,6 +49,8 @@ class Matrices:
         return mat1
 
     def matrixSplit(self, items, cols, rows):
+        items = fillNoneValues(items)
+
         mat1 = []
         mat2 = []
         i = 0
@@ -38,7 +58,7 @@ class Matrices:
         mat2pos = 1
         curr = []
         curr2 = []
-        for x in items:
+        for x in items.items():
             if i < (cols * rows):
                 num = int(x[1])
                 curr.append(num)
@@ -60,14 +80,13 @@ class Matrices:
                 else:
                     mat2pos += 1
             i += 1
-        print(len(mat1))
-        print(mat1)
-        print(mat2)
+
         return mat1, mat2
 
     # Splitting matrices for multiple dimensions
 
     def matrixSplitMult(self, items, col1, row1, col2, row2):
+        items = fillNoneValues(items)
         mat1 = []
         mat2 = []
         i = 0
@@ -75,7 +94,7 @@ class Matrices:
         mat2pos = 1
         curr = []
         curr2 = []
-        for x in items:
+        for x in items.items():
             if i < (col1 * row1):
                 num = int(x[1])
                 curr.append(num)
@@ -97,9 +116,6 @@ class Matrices:
                 else:
                     mat2pos += 1
             i += 1
-        print(len(mat1))
-        print(mat1)
-        print(mat2)
         return mat1, mat2
 
     def matrixDeterminant(self, mat):
@@ -131,20 +147,51 @@ class Matrices:
                         new_arr[i][j] = -arr[i][j]
                         negative = False
                     else:
-                        if arr[i][j] >= 0:
-                            negative = True
-                        else:
-                            new_arr[i][j] = -arr[i][j]
-                            negative = True
+                        negative = True
         else:
             new_arr[0][1] = -arr[0][1]
             new_arr[1][0] = -arr[1][0]
         return new_arr
 
+    def simultaneous_equations(self, lmatrix, rmatrix, unknowns):
+        x = 0
+        y = 0
+        z = 0
+        print("First we put all elements from the left and right side into seperate matrices")
+        print("Left Matrix: ")
+        print(lmatrix)
+        print("Right Matrix: ")
+        print(rmatrix)
+        print("Then we inverse the left hand matrix: ")
+        if unknowns == 2:
+            lmatrixinv = np.linalg.inv(lmatrix)
+            print(lmatrixinv)
+            print("Then we multiply both sides by the inverse to cancel out the left hand variables: ")
+            result = self.matrixmultiplication(lmatrixinv, rmatrix)
+            print(result)
+            try:
+                x = round(result[0][0])
+                y = round(result[1][0])
+            except Exception as e:
+                x=round(result[0])
+                y=round(result[1])
+            return x, y
+        elif unknowns == 3:
+            lmatrixinv = np.linalg.inv(lmatrix)
+            print(lmatrixinv)
+            print("Then we multiply both sides by the inverse to cancel out the left hand variables: ")
+            result = self.matrixmultiplication(lmatrixinv, rmatrix)
+            print(result)
+
+            x = round(result[0][0])
+            y = round(result[1][0])
+            z = round(result[2][0])
+            return x, y, z
+
     def roundArr(self, arr):
         new_arr = arr
-        for i in range(0, len(arr)):
-            for j in range(0, len(arr)):
+        for i in range(0, len(arr[0])):
+            for j in range(0, len(arr[1])):
                 new_arr[i][j] = truncate(arr[i][j], 1)
         return new_arr
 
@@ -169,6 +216,12 @@ class Matrices:
         print("Inversed Matrix: ")
         print(inversed)
         return inversed
+
+    def check_inverse(self, matrix):
+        if self.matrixDeterminant(matrix) == 0:
+            return False
+        else:
+            return True
 
     def check_mult_dimension(self, col1, row2):
         if col1 == row2:
