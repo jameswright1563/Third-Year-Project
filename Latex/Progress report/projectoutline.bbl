@@ -1,0 +1,23 @@
+\begin{thebibliography}{}
+
+\bibitem[wol, 2011]{wolfram}
+ (2011).
+\newblock Wolfram-alpha.
+\newblock \url{https://www.wolframalpha.com/}.
+
+\bibitem[rev, 2015]{revision}
+ (2015).
+\newblock revisonmaths.
+\newblock \url{https://revisionmaths.com/}.
+
+\bibitem[mat, 2021]{math}
+ (2021).
+\newblock Microsoft math solver.
+\newblock \url{https://math.microsoft.com/en}.
+
+\bibitem[pyq, 2021]{pyqt}
+ (2021).
+\newblock Pyqt6 api documentation.
+\newblock \url{https://www.riverbankcomputing.com/static/Docs/PyQt6/}.
+
+\end{thebibliography}
