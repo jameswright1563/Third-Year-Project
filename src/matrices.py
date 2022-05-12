@@ -1,36 +1,37 @@
 import numpy as np
-import math
-import PySimpleGUI as sg
-
 
 def truncate(n, decimals=0):
     multiplier = 10 ** decimals
     return int(n * multiplier) / multiplier
 
 
-def fillNoneValues(items):
-    newDict = {}
-    for x in items:
-        if items[x] == "":
-            newDict[x] = "0"
-        else:
-            try:
-                newDict[x] = float(items[x])
-            except ValueError:
-                sg.Popup("Please enter a numerical value")
-    return newDict
-
 class Matrices:
 
     def __init__(self):
         self.scalar = None
 
+    def createResultPage(self,result):
+        result_str = "Result: \n" + "\n".join([''.join(['{:4}'.format(item) for item in row]) for row in result])
+        return result_str
+
     def scalarMult(self, mat, scalar):
         self.scalar = float(scalar)
         return self.scalar * np.array(mat)
 
+    def fillNoneValues(self,items):
+        newDict = {}
+        try:
+            for x in items:
+                if items[x] == "":
+                    newDict[x] = "0"
+                else:
+                    newDict[x] = float(items[x])
+            return newDict
+        except ValueError:
+            return
+
     def singleSplit(self, items, cols, rows):
-        items = fillNoneValues(items)
+        items = self.fillNoneValues(items)
         mat1 = []
         i = 0
         mat1pos = 1
@@ -40,7 +41,6 @@ class Matrices:
                 num = int(x[1])
                 curr.append(num)
                 if mat1pos == cols:
-                    # curr.append(num)
                     mat1.append(curr)
                     curr = []
                     mat1pos = 1
@@ -49,7 +49,7 @@ class Matrices:
         return mat1
 
     def matrixSplit(self, items, cols, rows):
-        items = fillNoneValues(items)
+        items = self.fillNoneValues(items)
 
         mat1 = []
         mat2 = []
@@ -86,7 +86,7 @@ class Matrices:
     # Splitting matrices for multiple dimensions
 
     def matrixSplitMult(self, items, col1, row1, col2, row2):
-        items = fillNoneValues(items)
+        items = self.fillNoneValues(items)
         mat1 = []
         mat2 = []
         i = 0
@@ -173,8 +173,8 @@ class Matrices:
                 x = round(result[0][0])
                 y = round(result[1][0])
             except Exception as e:
-                x=round(result[0])
-                y=round(result[1])
+                x = round(result[0])
+                y = round(result[1])
             return x, y
         elif unknowns == 3:
             lmatrixinv = np.linalg.inv(lmatrix)

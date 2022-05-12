@@ -1,50 +1,51 @@
 import numpy as np
 import PySimpleGUI as sg
 import src.matrices as mat
-from numpy import dot, array, empty_like
 from matplotlib import pyplot as plt
-from pyrect import Point
 
 
 def typeCheck(items):
     newDict = {}
-    for x in items:
-        if items[x] == "":
-            newDict[x] = "0"
-        else:
-            try:
+    try:
+        for x in items:
+            if items[x] == "":
+                newDict[x] = "0"
+            else:
                 newDict[x] = float(items[x])
-            except ValueError:
-                sg.Popup("Please enter a numerical value")
-    items = newDict
-    return items
+        return newDict
+    except ValueError:
+        return
 
 
 def getLineSplit(items):
     items = typeCheck(items)
     # Cofactor matrices for negative items
-    eq1 = [-float(items["v1d1i"]), float(items["v2d1i"])]
-    eq2 = [-float(items["v1d1j"]), float(items["v2d1j"])]
-    eq3 = [float(items["v1d1k"]), -float(items["v2d1k"])]
-    lmatrix = np.array([eq1, eq2])
-    rmatrix = np.array([float(items["v1p1i"]) - float(items["v2p1i"]), float(items["v1p1j"]) - float(items["v2p1j"])])
     try:
-        np.linalg.inv(lmatrix)
-    except np.linalg.LinAlgError:
+        eq1 = [-float(items["v1d1i"]), float(items["v2d1i"])]
+        eq2 = [-float(items["v1d1j"]), float(items["v2d1j"])]
+        eq3 = [float(items["v1d1k"]), -float(items["v2d1k"])]
         lmatrix = np.array([eq1, eq2])
-        rmatrix = np.array(
-            [float(items["v1p1j"]) - float(items["v2p1j"]), float(items["v1p1k"]) - float(items["v2p1k"])])
-    Vector().vecLinePlot([float(items["v1p1i"]), float(items["v1p1j"])], [float(items["v1d1i"]), float(items["v1d1j"])])
-    t, s = mat.Matrices().simultaneous_equations(lmatrix, rmatrix, 2)
-    print("t = ")
-    print(t)
-    print("s = ")
-    print(s)
-    print("Sub into Line 1: ")
-    x = float(items["v1p1i"]) + (t * float(items["v1d1i"]))
-    y = float(items["v1p1j"]) + (t * float(items["v1d1j"]))
-    z = float(items["v1p1k"]) + (t * float(items["v1d1k"]))
-    return x, y, z
+        rmatrix = np.array([float(items["v1p1i"]) - float(items["v2p1i"]), float(items["v1p1j"]) - float(items["v2p1j"])])
+        try:
+            np.linalg.inv(lmatrix)
+        except np.linalg.LinAlgError:
+            lmatrix = np.array([eq1, eq2])
+            rmatrix = np.array(
+                [float(items["v1p1j"]) - float(items["v2p1j"]), float(items["v1p1k"]) - float(items["v2p1k"])])
+        Vector().vecLinePlot([float(items["v1p1i"]), float(items["v1p1j"])], [float(items["v1d1i"]), float(items["v1d1j"])])
+        t, s = mat.Matrices().simultaneous_equations(lmatrix, rmatrix, 2)
+        print("t = ")
+        print(t)
+        print("s = ")
+        print(s)
+        print("Sub into Line 1: ")
+        x = float(items["v1p1i"]) + (t * float(items["v1d1i"]))
+        y = float(items["v1p1j"]) + (t * float(items["v1d1j"]))
+        z = float(items["v1p1k"]) + (t * float(items["v1d1k"]))
+        return x, y, z
+
+    except TypeError:
+        raise AttributeError
 
 
 def getVecOpItems(values):
