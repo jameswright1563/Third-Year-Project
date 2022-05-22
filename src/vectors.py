@@ -6,46 +6,24 @@ from matplotlib import pyplot as plt
 
 def typeCheck(items):
     newDict = {}
-    try:
-        for x in items:
-            if items[x] == "":
-                newDict[x] = "0"
-            else:
+    for x in items:
+        if items[x] == "":
+            newDict[x] = "0"
+        else:
+            try:
                 newDict[x] = float(items[x])
-        return newDict
-    except ValueError:
-        return
+            except ValueError:
+                sg.Popup("Please enter a numerical value")
+                raise TypeError
+    items = newDict
+    return items
 
 
 def getLineSplit(items):
     items = typeCheck(items)
-    # Cofactor matrices for negative items
-    try:
-        eq1 = [-float(items["v1d1i"]), float(items["v2d1i"])]
-        eq2 = [-float(items["v1d1j"]), float(items["v2d1j"])]
-        eq3 = [float(items["v1d1k"]), -float(items["v2d1k"])]
-        lmatrix = np.array([eq1, eq2])
-        rmatrix = np.array([float(items["v1p1i"]) - float(items["v2p1i"]), float(items["v1p1j"]) - float(items["v2p1j"])])
-        try:
-            np.linalg.inv(lmatrix)
-        except np.linalg.LinAlgError:
-            lmatrix = np.array([eq1, eq2])
-            rmatrix = np.array(
-                [float(items["v1p1j"]) - float(items["v2p1j"]), float(items["v1p1k"]) - float(items["v2p1k"])])
-        Vector().vecLinePlot([float(items["v1p1i"]), float(items["v1p1j"])], [float(items["v1d1i"]), float(items["v1d1j"])])
-        t, s = mat.Matrices().simultaneous_equations(lmatrix, rmatrix, 2)
-        print("t = ")
-        print(t)
-        print("s = ")
-        print(s)
-        print("Sub into Line 1: ")
-        x = float(items["v1p1i"]) + (t * float(items["v1d1i"]))
-        y = float(items["v1p1j"]) + (t * float(items["v1d1j"]))
-        z = float(items["v1p1k"]) + (t * float(items["v1d1k"]))
-        return x, y, z
 
-    except TypeError:
-        raise AttributeError
+    # Cofactor matrices for negative items
+    return items
 
 
 def getVecOpItems(values):
@@ -70,20 +48,21 @@ def getVecOpItems(values):
 
 
 def getPointSplit(items):
-    newDict = {}
-    for x in items:
-        if items[x] == "":
-            newDict[x] = "0"
-        else:
-            try:
-                newDict[x] = float(items[x])
-            except ValueError:
-                sg.Popup("Please enter a numerical value")
-    items = newDict
-    vector1p1 = [float(items["v1p1i"]), float(items["v1p1j"]), float(items["v1p1k"])]
-    vector1p2 = [float(items["v1p2i"]), float(items["v1p2j"]), float(items["v1p2k"])]
-    vector2p1 = [float(items["v2p1i"]), float(items["v2p1j"]), float(items["v2p1k"])]
-    vector2p2 = [float(items["v2p2i"]), float(items["v2p2j"]), float(items["v2p2k"])]
+    unknowns = 0
+    items = typeCheck(items)
+
+    if items["v1p1k"] + items["v1p2k"] + items["v2p1k"] + items["v2p2k"] == "":
+        unknowns = 2
+    if unknowns != 2:
+        vector1p1 = [float(items["v1p1i"]), float(items["v1p1j"]), float(items["v1p1k"])]
+        vector1p2 = [float(items["v1p2i"]), float(items["v1p2j"]), float(items["v1p2k"])]
+        vector2p1 = [float(items["v2p1i"]), float(items["v2p1j"]), float(items["v2p1k"])]
+        vector2p2 = [float(items["v2p2i"]), float(items["v2p2j"]), float(items["v2p2k"])]
+    else:
+        vector1p1 = [float(items["v1p1i"]), float(items["v1p1j"])]
+        vector1p2 = [float(items["v1p2i"]), float(items["v1p2j"])]
+        vector2p1 = [float(items["v2p1i"]), float(items["v2p1j"])]
+        vector2p2 = [float(items["v2p2i"]), float(items["v2p2j"])]
     return vector1p1, vector1p2, vector2p1, vector2p2
 
 
@@ -94,10 +73,98 @@ class Vector:
         self.vectorChoice = None
         self.scalar = scalar
 
-    def getPointIntersection(self, a1, b1, a2=None, b2=None):
+    def getLineIntersection(self, items):
+        try:
+
+            items = typeCheck(items)
+            if items == "":
+                return ""
+            print("We must organise our variables into matrices and rearrange unknowns to the left hand side.")
+            eq1 = [float(items["v1d1i"]), -float(items["v2d1i"])]
+            eq2 = [float(items["v1d1j"]), -float(items["v2d1j"])]
+            print("eq1=", eq1)
+            print("eq2=", eq2)
+
+            if items["v1d1k"] + items["v2d1k"] == "":
+                lmatrix = np.array([eq1, eq2])
+                rmatrix = np.array(
+                    [-float(items["v1p1i"]) + float(items["v2p1i"]), float(items["v1p1j"]) + float(items["v2p1j"])])
+                try:
+                    np.linalg.inv(lmatrix)
+                except np.linalg.LinAlgError:
+                    print("No intersections at all, matrix is irreversible, or vectors are parallel.")
+                    return ""
+            else:
+                try:
+                    lmatrix = np.array([eq1, eq2])
+                    rmatrix = np.array(
+                        [-float(items["v1p1i"]) + float(items["v2p1i"]),
+                         -float(items["v1p1j"]) + float(items["v2p1j"])])
+
+                    np.linalg.inv(lmatrix)
+                except np.linalg.LinAlgError:
+                    print("No intersection for eq1 and eq2, attempting 2 and 3.")
+                    eq3 = [float(items["v1d1k"]), -float(items["v2d1k"])]
+                    lmatrix = np.array([eq2, eq3])
+                    rmatrix = np.array(
+                        [-float(items["v1p1j"]) + float(items["v2p1j"]),
+                         -float(items["v1p1k"]) + float(items["v2p1k"])])
+                    try:
+                        print("No intersection for eq2 and eq3, attempting 1 and 3.")
+                        eq3 = [float(items["v1d1k"]), -float(items["v2d1k"])]
+                        lmatrix = np.array([eq1, eq3])
+                        rmatrix = np.array(
+                            [-float(items["v1p1i"]) + float(items["v2p1i"]),
+                             -float(items["v1p1k"]) + float(items["v2p1k"])])
+                        np.linalg.inv(lmatrix)
+                    except np.linalg.LinAlgError:
+                        print("No intersections at all, or vectors are parallel.")
+                        return ""
+
+            t, s = mat.Matrices().simultaneous_equations(lmatrix, rmatrix, 2)
+            print("t = ")
+            print(t)
+            print("s = ")
+            print(s)
+            print("Sub into Line 1: ")
+            x = float(items["v1p1i"]) + (t * float(items["v1d1i"]))
+            y = float(items["v1p1j"]) + (t * float(items["v1d1j"]))
+            z = float(items["v1p1k"]) + (t * float(items["v1d1k"]))
+            return x, y, z
+
+        except TypeError:
+            raise AttributeError
+
+    def getPointIntersectionForTwo(self, x1, y1, x2, y2, x3, y3, x4, y4):
+        D = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+        if D == 0:
+            print(
+                "As (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4) is equal to zero, the lines are paralell and do not intersect")
+            return "No intersect"
+
+        else:
+            px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / (
+                    (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
+            py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / (
+                    (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
+            print("""Formulas used:
+                    px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / (
+                                (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
+                    py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / (
+                                (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))""")
+            print("px = " + str(px))
+            print("py = " + str(py))
+            return [px, py]
+
+    def getPointIntersectionForThree(self, a1, b1, a2, b2):
         self.vector1 = np.cross(a1, b1)
         self.vector2 = np.cross(a2, b2)
-        x, y, z = self.crossProduct()
+        print("Vector 1: " + str(self.vector1))
+        print("Vector 2: " + str(self.vector2))
+        arr = self.crossProduct()
+        x = arr[0]
+        y = arr[1]
+        z = arr[2]
         print("x = ", x)
         print(x)
         print("y = ")
@@ -137,9 +204,9 @@ class Vector:
         plt.rcParams["figure.autolayout"] = True
         data = np.array(vec1d)
         origin = np.array(vec1p)
-        plt.quiver(*origin, data[0], color=['black'], scale=15)
+        plt.quiver(*origin, data[0], data[1], color=['blue', 'red'], scale=40)
         plt.show()
 
     def vectorDistance(self):
         vector_d = self.vector2 - self.vector1
-        return self.getMagnitude(vector_d)
+        return round(self.getMagnitude(vector_d), 2)

@@ -1,10 +1,11 @@
 import io
 import urllib
+import smtplib, ssl
 
+import PySimpleGUI
 import numpy as np
 import wolframalpha
 from PIL import Image, ImageTk
-
 import src.matrices as mat
 import src.vectors as vec
 import PySimpleGUI as sg
@@ -19,6 +20,9 @@ calc = calc.Calculus()
 
 
 class GUI:
+    def createStringResult(self, result):
+        result_str = "Result is " + str(result)
+        return result_str
 
     def step_results(self, result, steps):
         try:
@@ -39,6 +43,7 @@ class GUI:
         row2 = 0
         unknowns = 0
         scalar = 0
+        button_action = ""
         appid = "W7YJ9Q-85R328TAWQ"
         client = wolframalpha.Client(appid)
         while True:
@@ -104,7 +109,7 @@ class GUI:
                             steps = data[1]["plaintext"]
                             self.step_results(result, steps)
                         except KeyError:
-                            sg.Popup("Results: "+ next(res.results).text)
+                            sg.Popup("Results: " + next(res.results).text)
                 if event == "-MATRIX-":
                     window.close()
                     window = lay.createMatrixLayout()
@@ -123,7 +128,7 @@ class GUI:
                     dim = values["singledim"]
                     window = lay.createInverseLayout(dim, dim)
                 if event == "-insub-":
-                    arr = mat.Matrices().singleSplit(values, dim, dim)
+                    arr = mat.singleSplit(values, dim, dim)
                     try:
                         result = mat.manualInverse(np.array(arr))
                         print("The result is:")
@@ -170,9 +175,10 @@ class GUI:
                         window.close()
                         window = lay.createMultLayout(col1, row1, col2, row2)
                 if event == "-multmat-":
-                    matrices = mat.Matrices().matrixSplitMult(values, col1, row1, col2, row2)
-                    result = mat.Matrices().matrixmultiplication(matrices[0], matrices[1])
+                    matrices = mat.matrixSplitMult(values, col1, row1, col2, row2)
+                    result = mat.matrixmultiplication(matrices[0], matrices[1])
                     print(result)
+                    sg.Popup(mat.createResultPage(result))
 
                 if event == "-matdet":
                     window.close()
@@ -183,6 +189,7 @@ class GUI:
                     matrix = mat.singleSplit(values, dim, dim)
                     result = mat.matrixDeterminant(matrix)
                     print(result)
+                    sg.Popup(mat.createResultPage(result))
                 if event == "mattran":
                     window.close()
                     cols = values["trancol"]
@@ -220,13 +227,13 @@ class GUI:
                         curr = []
                         rmatrix.append([float(values[ansstr])])
                     try:
-                        result = mat.Matrices().simultaneous_equations(np.array(lmatrix), np.array(rmatrix), unknowns)
+                        result = mat.simultaneous_equations(np.array(lmatrix), np.array(rmatrix), unknowns)
                         result_str = "x = " + str(result[0]) + "\ny = " + str(result[1])
                         if unknowns > 2:
                             result_str = result_str + "\nz = " + str(result[2])
                         sg.Popup(result_str)
                     except np.linalg.LinAlgError:
-                        sg.Popup("Matrix irreversible")
+                        sg.Popup("No solutions found as matrix is irreversible")
                 if event == "vector":
                     window.close()
                     window = lay.createVectorLayout()
@@ -234,42 +241,58 @@ class GUI:
                     window.close()
                     window = lay.createIntersectionPointsLayout()
                 if event == "solveintersectpoint":
-
                     try:
                         a1, b1, a2, b2 = vec.getPointSplit(values)
                         vector = vec.Vector()
-                        x, y, z = vector.getPointIntersection(a1, b1, a2, b2)
+                        if len(a1) + len(a2) + len(b1) + len(b2) == 8:
+                            result = vector.getPointIntersectionForTwo(a1[0], a1[1], b1[0], b1[1], a2[0], a2[1],
+                                                                       b2[0], b2[1])
+                            sg.Popup("Result: " + str(result))
+                        else:
+                            result = vector.getPointIntersectionForThree(a1, b1, a2, b2)
+                            sg.Popup("Result: " + str(result))
                     except TypeError as ex:
                         print(ex)
+
                 if event == "intersectequations":
                     window.close()
                     window = lay.createIntersectLineLayout()
                 if event == "lineintersectsolve":
-                    tup = vec.getLineSplit(values)
-                    print("Point of Intersection: " + str(tup))
+                    x = vec.Vector().getLineIntersection(values)
+                    if x != "":
+                        print("Point of Intersection: " + str(x))
+                    else:
+                        sg.Popup("No points of intersection")
                 if event == "vecadd":
                     dim = values["vecadddim"]
                     window.close()
                     window = lay.createVectorAdditionLayout(dim)
+
+                # Solution for vector operations
                 if event == "vecaddsolve":
                     op = values["vecop"]
                     vect = vec.getVecOpItems(values)
                     if op == "+":
                         result = vect.addition()
+                        sg.Popup("Result: " + str(result))
                     elif op == "-":
                         result = vect.subtraction()
-                    else:
+                        sg.Popup("Result: " + str(result))
+
+                    elif op == "/":
                         result = vect.division()
-                    sg.Popup(lay.createStringResult(result))
+                        sg.Popup("Result: " + str(result))
+
+                    else:
+                        sg.Popup("Please select from the listbox of operations and do not eneter your own text")
                 if event == "vecdist":
                     dim = values["vecadddim"]
                     window.close()
                     window = lay.createVectorDistLayout(dim)
                 if event == "vecdistsolve":
                     vect = vec.getVecOpItems(values)
-                    result = round(vect.vectorDistance(), 2)
-                    result_str = "Result is " + str(result)
-                    sg.Popup(result_str)
+                    result = vect.vectorDistance()
+                    sg.Popup(self.createStringResult(result))
 
                 if event == "vecdot":
                     window.close()
@@ -281,12 +304,13 @@ class GUI:
                     op = values["vecop"]
                     if op == "Dot":
                         result = vect.dotProduct()
+                        sg.Popup(self.createStringResult(result))
                     elif op == "Cross":
                         result = vect.crossProduct()
+                        sg.Popup(self.createStringResult(result))
 
                     else:
                         sg.Popup("Invalid Choice. Please choose Cross or Dot")
-                    sg.Popup(result)
 
                 if event == "calculus":
                     window.close()
@@ -295,7 +319,7 @@ class GUI:
                     window.close()
                     window = lay.createDifferentiationLayout()
                 if event == "diffsolve":
-                    res=calc.differentiation(values)
+                    res = calc.differentiation(values)
                     self.displayResult(res)
                 if event == "integ":
                     window.close()
@@ -307,9 +331,36 @@ class GUI:
                 if event == "integsolve":
                     res = calc.integration(values)
                     self.displayResult(res)
-            except AttributeError as ex:
+            except Exception as ex:
                 print(ex)
-                sg.Popup("Numerical value not entered!")
+                exception = ex
+                button_action = sg.Popup("Unknown Error has occurred. Would you like to submit a form to the "
+                                         "developer? \n\nError Details:\n" + str(ex),
+                                         button_type=sg.POPUP_BUTTONS_YES_NO)
+            if button_action == "Yes":
+                print("Button Action = Yes")
+                button_action = ""
+                window = lay.submitForm()
+            if button_action == "No":
+                button_action=""
+                window.close()
+                window = lay.createSGLayout(theme)
+            if event == "-formsubmit-":
+                context = ssl.create_default_context()
+                try:
+                    server = smtplib.SMTP("smtp.gmail.com", 587)
+                    server.ehlo()
+                    server.starttls(context=context)
+                    server.ehlo()
+                    server.login("dssug17@gmail.com", "abc489GHJ")
+                    msg = "User email: " + values["-email-"] + "\nException: " + str(exception) + "\nIssue: " + values[
+                        "-userissue-"]
+                    server.sendmail("dssug17@gmail.com", "jameswright1563@gmail.com", msg)
+                    sg.Popup("Email sent to developer with your issue details. Redirecting you to home page!")
+                except Exception as e:
+                    print(e)
+                    sg.Popup("Email could not be sent to developer. Redirecting you to home page!")
+                window = lay.createSGLayout(theme)
             if event == "OK":
                 continue
             if event == sg.WINDOW_CLOSED or event == sg.WIN_CLOSED:
@@ -325,5 +376,6 @@ class GUI:
             sg.Popup(result)
         except StopIteration:
             sg.Popup("No results!")
+
 
 GUI().gui()

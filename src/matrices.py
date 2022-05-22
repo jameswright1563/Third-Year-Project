@@ -30,23 +30,23 @@ class Matrices:
         except ValueError:
             return
 
-    def singleSplit(self, items, cols, rows):
-        items = self.fillNoneValues(items)
-        mat1 = []
+    def singleSplit(self, arr, cols, rows):
+        arr = self.fillNoneValues(arr)
+        result = []
         i = 0
-        mat1pos = 1
-        curr = []
-        for x in items.items():
+        arrPos = 1
+        currentArr = []
+        for x in arr.items():
             if i < (cols * rows):
                 num = int(x[1])
-                curr.append(num)
-                if mat1pos == cols:
-                    mat1.append(curr)
-                    curr = []
-                    mat1pos = 1
+                currentArr.append(num)
+                if arrPos == cols:
+                    result.append(currentArr)
+                    currentArr = []
+                    arrPos = 1
                 else:
-                    mat1pos += 1
-        return mat1
+                    arrPos += 1
+        return result
 
     def matrixSplit(self, items, cols, rows):
         items = self.fillNoneValues(items)
@@ -170,11 +170,11 @@ class Matrices:
             result = self.matrixmultiplication(lmatrixinv, rmatrix)
             print(result)
             try:
-                x = round(result[0][0])
-                y = round(result[1][0])
+                x = result[0][0]
+                y = result[1][0]
             except Exception as e:
-                x = round(result[0])
-                y = round(result[1])
+                x = result[0]
+                y = result[1]
             return x, y
         elif unknowns == 3:
             lmatrixinv = np.linalg.inv(lmatrix)

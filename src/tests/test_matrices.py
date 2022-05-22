@@ -102,8 +102,8 @@ class TestMatrices(TestCase):
         test_arr_left = np.array([[2, 3], [5, 2]])
         test_arr_right = np.array([[13], [16]])
         expected = mat.Matrices().simultaneous_equations(test_arr_left, test_arr_right, 2)
-        assert_that(expected[0], equal_to(2))
-        assert_that(expected[1], equal_to(3))
+        assert_that(round(expected[0]), equal_to(2))
+        assert_that(round(expected[1]), equal_to(3))
         print(expected)
 
     """
