@@ -1,0 +1,38 @@
+\begin{thebibliography}{}
+
+\bibitem[rev, 2004]{revision}
+ (2004).
+\newblock revisonmaths.
+\newblock
+  \url{https://revisionmaths.com/advanced-level-maths-revision/advanced-level-pure-maths-section}.
+
+\bibitem[py, 2022]{py}
+ (2022).
+\newblock Pysimplegui cookbook.
+\newblock \url{https://pysimplegui.readthedocs.io/en/latest/}.
+\newblock Retrieved on 24/02/2022.
+
+\bibitem[Wol, 2022]{Wolfram-Alpha}
+ (2022).
+\newblock Wolfram-alpha.
+\newblock \url{ https://www.wolframalpha.com}.
+
+\bibitem[fur, nd]{furthermaths}
+ (n.d).
+\newblock Further maths tutor.
+\newblock \url{https://furthermathstutor.co.uk}.
+\newblock Retrieved on 20/01/2022.
+
+\bibitem[mat, nd]{math}
+ (n.d).
+\newblock Microsoft math solver.
+\newblock \url{https://math.microsoft.com/en}.
+
+\bibitem[Pittet, nd]{atlassian}
+Pittet, S. (n.d).
+\newblock An introduction to code coverage.
+\newblock
+  \url{https://www.atlassian.com/continuous-delivery/software-testing/code-coverage#:~:text=With%20that%20being%20said%20it,fairly%20low%20percentage%20of%20coverage.}
+\newblock Retrieved on 29/04/2022.
+
+\end{thebibliography}

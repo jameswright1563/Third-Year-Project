@@ -5,11 +5,17 @@ import src.matrices as mat
 
 class Vector:
 
+    """
+    Class responsible for all vector operations
+    """
+
     def __init__(self, vector1=None, vector2=None, scalar=None):
         self.vector1 = np.array(vector1)
         self.vector2 = np.array(vector2)
         self.vectorChoice = None
         self.scalar = scalar
+
+    # Splits values manually by key checking - Returns vector object
 
     def getVecOpItems(self, values):
         values = self.typeCheck(values)

@@ -1,0 +1,25 @@
+\contentsline {figure}{\numberline {1}{\ignorespaces Report poster\relax }}{6}{figure.caption.4}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Step-by-step solution for expanding $(x+3)^2$ detailed in each box the page contains\relax }}{9}{figure.caption.5}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Use of syntax formatting in the input box at the top of the figure.\relax }}{10}{figure.caption.6}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Answer output. Input box at top of page, with $\theta $ being equal to the input solution. Also a graph below of the function. \relax }}{12}{figure.caption.7}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Topics split into sections found in the A-Level Curriculum\relax }}{12}{figure.caption.8}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Calculator Input\relax }}{13}{figure.caption.9}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Information on the page regarding vectors, showing how to find the point of intersection of two lines, and finding the scalar product\relax }}{15}{figure.caption.10}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Further Maths Tutor - FP1 Matrices page on simultaneous equations\relax }}{16}{figure.caption.11}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Demo Program - All Elements\relax }}{17}{figure.caption.12}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Documentation on Button Images\relax }}{18}{figure.caption.13}%
+\contentsline {figure}{\numberline {11}{\ignorespaces UML diagram showing the classes and methods I aim to create in code development.\relax }}{20}{figure.caption.14}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Gantt Chart - Project Plan detailing how I will complete my goals from 1-26 weeks.\relax }}{22}{figure.caption.15}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Use of Numpy operations in matrices.py\relax }}{24}{figure.caption.16}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Use of singleSplit algorithm in matrices.py\relax }}{26}{figure.caption.17}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Definition in vectors.py, showing user input being split into a vector through key checking\relax }}{27}{figure.caption.18}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Definition in vectors.py, showing how the Vectors window is created\relax }}{28}{figure.caption.19}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Home page displayed to the user upon launching the application. Contains home button, help button, question boxes and buttons for navigation.\relax }}{30}{figure.caption.20}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Pop-up of results gained from entering "dot product (1,2,3),(1,2,2)" in the question box behind the pop-up\relax }}{31}{figure.caption.21}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Window displayed upon pressing "Matrices" on the home page\relax }}{32}{figure.caption.22}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Dimension selection window upon a user pressing "Matrices Multiplication" on the "Matrices" page. 4 Input boxes to select the dimensions of two different matrices\relax }}{33}{figure.caption.23}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Pop-up displayed upon the user entering [1,3,2,2] in the input boxes. Result displayed as [-0.5, 0.7, 0.5, -0.2]. Box below the input boxes show the step-by-step solution\relax }}{34}{figure.caption.24}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Pop-up displayed upon the user entering [1,1,1,1] in the input boxes. Showing determinant is equal to zero\relax }}{35}{figure.caption.25}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Pop-up displayed upon the user pressing the "Help" button on the home window\relax }}{36}{figure.caption.26}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Coverage report generated from tests. Shows coverage on the far right column for each file the tests cover.\relax }}{37}{figure.caption.27}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

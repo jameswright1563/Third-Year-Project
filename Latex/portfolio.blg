@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99d (TeX Live 2022)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: portfolio.aux
+The style file: apalike.bst
+Illegal, another \bibstyle command---line 141 of file portfolio.aux
+ : \bibstyle
+ :          {apalike}
+I'm skipping whatever remains of this command
+Database file #1: myBib.bib
+Warning--to sort, need author or key in Wolfram-Alpha
+Warning--to sort, need author or key in math
+Warning--to sort, need author or key in revision
+Warning--to sort, need author or key in furthermaths
+Warning--to sort, need author or key in py
+You've used 6 entries,
+            1935 wiz_defined-function locations,
+            501 strings with 4429 characters,
+and the built_in function-call counts, 1293 in all, are:
+= -- 137
+> -- 7
+< -- 1
++ -- 4
+- -- 2
+* -- 90
+:= -- 222
+add.period$ -- 21
+call.type$ -- 6
+change.case$ -- 31
+chr.to.int$ -- 6
+cite$ -- 16
+duplicate$ -- 60
+empty$ -- 106
+format.name$ -- 3
+if$ -- 247
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 0
+newline$ -- 36
+num.names$ -- 3
+pop$ -- 20
+preamble$ -- 1
+purify$ -- 31
+quote$ -- 0
+skip$ -- 45
+stack$ -- 0
+substring$ -- 79
+swap$ -- 0
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 36
+warning$ -- 5
+while$ -- 2
+width$ -- 0
+write$ -- 75
+(There was 1 error message)
