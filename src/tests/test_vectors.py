@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, Mock, patch
 from unittest import TestCase
 import src.vectors as vec
 
+vect = vec.Vector()
 """Test data: 4 dictionaries of values expected to"""
 
 items = {
@@ -65,6 +66,13 @@ items4 = {
     "v2d1k": "3"
 }
 
+items5 = {
+    "v1i": "",
+    "v2i": "1",
+    "v1j": "2",
+    "v2j": "3"
+}
+
 
 class TestVectors(TestCase):
     """
@@ -74,12 +82,12 @@ class TestVectors(TestCase):
 
     def test_getPointSplit(self):
         with patch('PySimpleGUI.Popup') as mock:
-            assert_that(calling(vec.getPointSplit).with_args(items2), raises(TypeError))
+            assert_that(calling(vect.getPointSplit).with_args(items2), raises(ValueError))
             instance = mock.return_value
             instance.return_value = "ok"
-        vector1p1, vector1p2, vector2p1, vector2p2 = vec.getPointSplit(items3)
+        vector1p1, vector1p2, vector2p1, vector2p2 = vect.getPointSplit(items3)
         assert_that(len(vector1p1), equal_to(3))
-        vector1p1, vector1p2, vector2p1, vector2p2 = vec.getPointSplit(items)
+        vector1p1, vector1p2, vector2p1, vector2p2 = vect.getPointSplit(items)
         expectedv1p1 = [0.0, 1.0, 3.0]
         print(vector1p1)
         assert_that(vector1p1[0], equal_to(expectedv1p1[0]))
@@ -94,32 +102,49 @@ class TestVectors(TestCase):
         assert_that(x, equal_to(-172.0))
 
     def test_getPointIntersectionforTwo(self):
-        vector1p1, vector1p2, vector2p1, vector2p2 = vec.getPointSplit(items3)
-        px, py = vec.Vector().getPointIntersectionForTwo(vector1p1[0], vector1p1[1], vector1p2[0], vector1p2[1],
-                                                         vector2p1[0], vector2p1[1], vector2p2[0], vector2p2[1])
+        vector1p1, vector1p2, vector2p1, vector2p2 = vect.getPointSplit(items3)
+        px, py = vect.getPointIntersectionForTwo(vector1p1[0], vector1p1[1], vector1p2[0], vector1p2[1],
+                                                 vector2p1[0], vector2p1[1], vector2p2[0], vector2p2[1])
         assert_that(px, equal_to(10.0))
         assert_that(py, equal_to(11.0))
         assert_that(vec.Vector().getPointIntersectionForTwo(0, 0, 0, 0, 0, 0, 0, 0), equal_to("No intersect"))
 
     def test_getLineIntersection(self):
-        with patch('PySimpleGUI.Popup') as mock:
-            assert_that(calling(vec.Vector().getLineIntersection).with_args(items2), raises(AttributeError))
-            instance = mock.return_value
-            instance.return_value = "ok"
-
         items4["v1d1i"] = "1"
-        items4["v1d1j"] = "-3"
-        items4["v1d1k"] = "-2"
+        items4["v1d1j"] = "3"
+        items4["v1d1k"] = "2"
         x, y, z = vec.Vector().getLineIntersection(items4)
-        assert_that(x, equal_to(0.0))
-        assert_that(y, equal_to(2.0))
-        assert_that(z, equal_to(4.0))
+        assert_that(x, equal_to(-2.4))
+        assert_that(y, equal_to(6.8))
+        assert_that(z, equal_to(7.2))
         items4["v1d1i"] = "0"
         items4["v1d1j"] = "0"
         items4["v1d1k"] = ""
         items4["v2d1k"] = ""
         x = vec.Vector().getLineIntersection(items4)
         assert_that(x, equal_to(""))
+        with patch('PySimpleGUI.Popup') as mock:
+            assert_that(calling(vec.Vector().getLineIntersection).with_args(items2), raises(TypeError))
+            instance = mock.return_value
+            instance.return_value = "ok"
+
+    def test_getVecOpItems(self):
+        result = vect.getVecOpItems(items5)
+        expected_1 = np.array([0, 2])
+        expected_2 = np.array([1, 3])
+        for i in range(0, 1):
+            assert_that(result.vector1[i], equal_to(expected_1[i]))
+            assert_that(result.vector2[i], equal_to(expected_2[i]))
+
+    def test_getVecOpItems2(self):
+        items5["v2k"] = "5"
+        items5["v1k"] = "4"
+        result = vect.getVecOpItems(items5)
+        expected_1 = np.array([0, 2, 4])
+        expected_2 = np.array([1, 3, 5])
+        for i in range(0, 2):
+            assert_that(result.vector1[i], equal_to(expected_1[i]))
+            assert_that(result.vector2[i], equal_to(expected_2[i]))
 
     def test_vector_distance(self):
         vec1 = np.array([-5, -2, 0])

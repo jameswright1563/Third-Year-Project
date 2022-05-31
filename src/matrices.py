@@ -1,8 +1,5 @@
 import numpy as np
-
-def truncate(n, decimals=0):
-    multiplier = 10 ** decimals
-    return int(n * multiplier) / multiplier
+import PySimpleGUI as sg
 
 
 class Matrices:
@@ -10,15 +7,15 @@ class Matrices:
     def __init__(self):
         self.scalar = None
 
-    def createResultPage(self,result):
-        result_str = "Result: \n" + "\n".join([''.join(['{:4}'.format(item) for item in row]) for row in result])
+    def truncate(self, n, decimals=0):
+        multiplier = 10 ** decimals
+        return int(n * multiplier) / multiplier
+
+    def createResultPage(self, result):
+        result_str = "Result: \n" + "\n".join(['  '.join(['{:4}'.format(item) for item in row]) for row in result])
         return result_str
 
-    def scalarMult(self, mat, scalar):
-        self.scalar = float(scalar)
-        return self.scalar * np.array(mat)
-
-    def fillNoneValues(self,items):
+    def fillNoneValues(self, items):
         newDict = {}
         try:
             for x in items:
@@ -28,7 +25,7 @@ class Matrices:
                     newDict[x] = float(items[x])
             return newDict
         except ValueError:
-            return
+            raise TypeError
 
     def singleSplit(self, arr, cols, rows):
         arr = self.fillNoneValues(arr)
@@ -118,9 +115,6 @@ class Matrices:
             i += 1
         return mat1, mat2
 
-    def matrixDeterminant(self, mat):
-        return np.linalg.det(mat)
-
     @staticmethod
     def minor(arr, i, j):
         # ith row, jth column removed
@@ -192,7 +186,7 @@ class Matrices:
         new_arr = arr
         for i in range(0, len(arr[0])):
             for j in range(0, len(arr[1])):
-                new_arr[i][j] = truncate(arr[i][j], 1)
+                new_arr[i][j] = self.truncate(arr[i][j], 1)
         return new_arr
 
     def manualInverse(self, arr):
@@ -241,27 +235,9 @@ class Matrices:
         result = np.subtract(mat1, mat2)
         return result
 
-    def matrixInput(self):
-        R = int(input("Enter the number of rows:"))
-        C = int(input("Enter the number of columns:"))
+    def matrixDeterminant(self, mat):
+        return np.linalg.det(mat)
 
-        print("Enter the entries in a single line (separated by space): ")
-
-        # User input of entries in a
-        # single line separated by space
-        entries = list(map(int, input().split()))
-
-        # For printing the matrix
-        matrix = np.array(entries).reshape(R, C)
-        print(matrix)
-        return matrix
-
-
-"""Temporary main Method"""
-
-if __name__ == '__main__':
-    choice = int(input("Type 1 for matrix muliplication \n2: Matrix Addition"))
-    if choice == 1:
-        Matrices.matrixmultiplication()
-    elif choice == 2:
-        Matrices.matrixAddition()
+    def scalarMult(self, mat, scalar):
+        self.scalar = float(scalar)
+        return self.scalar * np.array(mat)
